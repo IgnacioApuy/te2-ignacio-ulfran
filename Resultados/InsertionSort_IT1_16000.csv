@@ -1,0 +1,21 @@
+Iteracion,Tamano,TipoArreglo,Algoritmo,TiempoTicks,TiempoMilisegundos
+1,1000,Aleatorio,Insertion Sort,8672,0.867200
+2,1000,Ascendente,Insertion Sort,42,0.004200
+3,1000,Descendente,Insertion Sort,15209,1.520900
+4,1000,Aleatorio_0_a_10,Insertion Sort,6519,0.651900
+5,2000,Aleatorio,Insertion Sort,39763,3.976300
+6,2000,Ascendente,Insertion Sort,82,0.008200
+7,2000,Descendente,Insertion Sort,67468,6.746800
+8,2000,Aleatorio_0_a_10,Insertion Sort,32556,3.255600
+9,4000,Aleatorio,Insertion Sort,121828,12.182800
+10,4000,Ascendente,Insertion Sort,166,0.016600
+11,4000,Descendente,Insertion Sort,260216,26.021600
+12,4000,Aleatorio_0_a_10,Insertion Sort,116880,11.688000
+13,8000,Aleatorio,Insertion Sort,503296,50.329600
+14,8000,Ascendente,Insertion Sort,330,0.033000
+15,8000,Descendente,Insertion Sort,1030052,103.005200
+16,8000,Aleatorio_0_a_10,Insertion Sort,486549,48.654900
+17,16000,Aleatorio,Insertion Sort,2050481,205.048100
+18,16000,Ascendente,Insertion Sort,1030,0.103000
+19,16000,Descendente,Insertion Sort,4100087,410.008700
+20,16000,Aleatorio_0_a_10,Insertion Sort,1831507,183.150700
