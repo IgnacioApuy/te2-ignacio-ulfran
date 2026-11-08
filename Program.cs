@@ -1,6 +1,5 @@
 using TareaExtraclase2.Algoritmos;
 using TareaExtraclase2.Benchmark;
-using TareaExtraclase2.Generadores;
 
 Console.WriteLine("Tarea Extraclase 2 - Benchmark de algoritmos de ordenamiento");
 
@@ -33,20 +32,23 @@ int opcion = LeerOpcion(algoritmos.Length);
 string carpetaResultados = Path.Combine(Directory.GetCurrentDirectory(), "Resultados");
 Directory.CreateDirectory(carpetaResultados);
 
-string archivoReferencia = Path.Combine(carpetaResultados, "datos_referencia.csv");
-GeneradorArreglos.AsegurarDatosReferencia(archivoReferencia, maxN);
-
-string nombreSeguro = algoritmos[opcion - 1].Nombre.Replace(' ', '_');
-string archivoResultados = Path.Combine(
-    carpetaResultados,
-    $"resultados_{nombreSeguro}_{DateTime.Now:yyyyMMdd_HHmmss_fffffff}_{Guid.NewGuid():N}.csv");
+string nombreAlgoritmo = algoritmos[opcion - 1].Nombre.Replace(" ", string.Empty);
+int indiceIteracion = 0;
+string archivoResultados;
+do
+{
+    archivoResultados = Path.Combine(
+        carpetaResultados,
+        $"{nombreAlgoritmo}_IT{indiceIteracion}_{maxN}.csv");
+    indiceIteracion++;
+}
+while (File.Exists(archivoResultados));
 
 EjecutorBenchmark.Ejecutar(
     minN,
     maxN,
     algoritmos[opcion - 1].Nombre,
     algoritmos[opcion - 1].Ordenar,
-    archivoReferencia,
     archivoResultados);
 
 Console.WriteLine($"Benchmark finalizado. Resultados: {archivoResultados}");

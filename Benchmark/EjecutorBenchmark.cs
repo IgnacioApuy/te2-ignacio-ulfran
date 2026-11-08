@@ -20,7 +20,6 @@ public static class EjecutorBenchmark
         int maxN,
         string nombreAlgoritmo,
         Action<int[]> ordenar,
-        string archivoReferencia,
         string archivoResultados)
     {
         using var escritor = new StreamWriter(archivoResultados, append: false);
@@ -37,8 +36,7 @@ public static class EjecutorBenchmark
                     tamano,
                     tipo,
                     nombreAlgoritmo,
-                    ordenar,
-                    archivoReferencia);
+                    ordenar);
 
                 escritor.WriteLine(
                     $"{medicion.Iteracion},{medicion.Tamano},{medicion.TipoArreglo},{medicion.Algoritmo}," +
@@ -61,10 +59,9 @@ public static class EjecutorBenchmark
         int tamano,
         string tipo,
         string nombreAlgoritmo,
-        Action<int[]> ordenar,
-        string archivoReferencia)
+        Action<int[]> ordenar)
     {
-        int[] arreglo = GeneradorArreglos.CrearArreglo(archivoReferencia, tamano, tipo);
+        int[] arreglo = GeneradorArreglos.CrearArreglo(tamano, tipo);
 
         // El cronómetro abarca únicamente la llamada al algoritmo seleccionado.
         var cronometro = Stopwatch.StartNew();
