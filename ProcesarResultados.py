@@ -130,7 +130,10 @@ def load_results(csv_files):
 
 
 def median_rows(fieldnames, rows):
-    key_columns = [column for column in fieldnames if column not in TIME_COLUMNS]
+    key_columns = [
+        column for column in fieldnames
+        if column not in TIME_COLUMNS and column != "Iteracion"
+    ]
     grouped = defaultdict(list)
     for row in rows:
         key = tuple(row[column] for column in key_columns)
@@ -138,7 +141,11 @@ def median_rows(fieldnames, rows):
 
     medians = []
     for samples in grouped.values():
-        result = {column: samples[0][column] for column in key_columns}
+        result = {
+            column: samples[0][column]
+            for column in fieldnames
+            if column not in TIME_COLUMNS
+        }
         for column in TIME_COLUMNS:
             result[column] = statistics.median(sample[column] for sample in samples)
         medians.append(result)
@@ -181,6 +188,34 @@ def write_csv(path, fieldnames, rows):
             )
 
 
+def calculate_growth_ratios(median_results):
+    results_by_case = {
+        (row["Algoritmo"], row["TipoArreglo"], int(row["Tamano"])): row
+        for row in median_results
+    }
+    ratios = []
+    for (algorithm, array_type, size), previous in results_by_case.items():
+        following = results_by_case.get((algorithm, array_type, size * 2))
+        if following is None:
+            continue
+        previous_time = previous["TiempoMilisegundos"]
+        current_time = following["TiempoMilisegundos"]
+        ratios.append(
+            {
+                "Algoritmo": algorithm,
+                "TipoArreglo": array_type,
+                "TamanoAnterior": size,
+                "TamanoActual": size * 2,
+                "TiempoAnteriorMilisegundos": previous_time,
+                "TiempoActualMilisegundos": current_time,
+                "RazonT2nSobreTn": (
+                    current_time / previous_time if previous_time > 0 else ""
+                ),
+            }
+        )
+    return ratios
+
+
 def log_plot_time(value):
     if value < 0:
         raise ValueError("Los tiempos negativos no se pueden representar en el gráfico.")
@@ -196,6 +231,7 @@ def save_graphs(output_dir, median_results):
             )
 
     figure, axis = plt.subplots(figsize=(10, 6))
+    has_algorithm_data = False
     for algorithm in ALGORITHMS:
         sizes = sorted(
             size
@@ -213,6 +249,7 @@ def save_graphs(output_dir, median_results):
         if any(size <= 0 for size in sizes):
             raise ValueError("El gráfico log-log requiere tamaños positivos.")
         axis.plot(sizes, times, marker="o", label=algorithm)
+        has_algorithm_data = True
 
     axis.set_xscale("log")
     axis.set_yscale("log")
@@ -220,7 +257,17 @@ def save_graphs(output_dir, median_results):
     axis.set_xlabel("Tamaño del arreglo")
     axis.set_ylabel("Tiempo mediano (ms; 0 se muestra como 0.00005)")
     axis.grid(True, which="both", linestyle="--", alpha=0.4)
-    axis.legend()
+    if has_algorithm_data:
+        axis.legend()
+    else:
+        axis.text(
+            0.5,
+            0.5,
+            "No hay resultados de entrada aleatoria.",
+            ha="center",
+            va="center",
+            transform=axis.transAxes,
+        )
     figure.tight_layout()
     figure.savefig(output_dir / "comparacion_algoritmos_loglog.png", dpi=160)
     plt.close(figure)
@@ -233,6 +280,7 @@ def save_graphs(output_dir, median_results):
         "Descendente": ":",
         "Aleatorio_0_a_10": "-.",
     }
+    has_comparison_data = False
     for algorithm in ("Insertion Sort", "Quick Sort"):
         for array_type in ARRAY_TYPES:
             points = sorted(
@@ -258,6 +306,7 @@ def save_graphs(output_dir, median_results):
                 marker="o",
                 label=f"{algorithm} - {array_type}",
             )
+            has_comparison_data = True
 
     axis.set_xscale("log")
     axis.set_yscale("log")
@@ -265,7 +314,17 @@ def save_graphs(output_dir, median_results):
     axis.set_xlabel("Tamaño del arreglo")
     axis.set_ylabel("Tiempo mediano (ms; 0 se muestra como 0.00005)")
     axis.grid(True, which="both", linestyle="--", alpha=0.4)
-    axis.legend(ncol=2)
+    if has_comparison_data:
+        axis.legend(ncol=2)
+    else:
+        axis.text(
+            0.5,
+            0.5,
+            "No hay resultados de Insertion Sort ni Quick Sort.",
+            ha="center",
+            va="center",
+            transform=axis.transAxes,
+        )
     figure.tight_layout()
     figure.savefig(output_dir / "insertion_quick_por_tipo.png", dpi=160)
     plt.close(figure)
@@ -295,6 +354,19 @@ def main():
         arguments.output_dir / "medianas_algoritmos.csv",
         fieldnames,
         median_results,
+    )
+    write_csv(
+        arguments.output_dir / "razones_t2n.csv",
+        [
+            "Algoritmo",
+            "TipoArreglo",
+            "TamanoAnterior",
+            "TamanoActual",
+            "TiempoAnteriorMilisegundos",
+            "TiempoActualMilisegundos",
+            "RazonT2nSobreTn",
+        ],
+        calculate_growth_ratios(median_results),
     )
     save_graphs(arguments.output_dir, median_results)
 

@@ -1,0 +1,4 @@
+Iteracion,Tamano,TipoArreglo,Algoritmo,TiempoTicks,TiempoMilisegundos
+1,100000,Digitos_3,Radix Sort,89461,8.946100
+2,100000,Digitos_6,Radix Sort,189399,18.939900
+3,100000,Digitos_9,Radix Sort,324867,32.486700

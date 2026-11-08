@@ -1,0 +1,22 @@
+Iteracion,Tamano,TipoArreglo,Algoritmo,TiempoTicks,TiempoMilisegundos
+1,1000,Aleatorio,Quick Sort,1038,0.1038
+6,1000,Ascendente,Quick Sort,35721,3.5721
+11,1000,Descendente,Quick Sort,21751,2.1751
+16,1000,Aleatorio_0_a_10,Quick Sort,3141,0.3141
+21,2000,Aleatorio,Quick Sort,2225,0.2225
+26,2000,Ascendente,Quick Sort,123514,12.3514
+31,2000,Descendente,Quick Sort,88652,8.8652
+36,2000,Aleatorio_0_a_10,Quick Sort,11618,1.1618
+41,4000,Aleatorio,Quick Sort,5571,0.5571
+46,4000,Ascendente,Quick Sort,490171,49.0171
+51,4000,Descendente,Quick Sort,419098,41.9098
+56,4000,Aleatorio_0_a_10,Quick Sort,147364,14.7364
+61,8000,Aleatorio,Quick Sort,11005,1.1005
+66,8000,Ascendente,Quick Sort,2555999,255.5999
+71,8000,Descendente,Quick Sort,1481584,148.1584
+76,8000,Aleatorio_0_a_10,Quick Sort,182942,18.2942
+81,16000,Aleatorio,Quick Sort,22661,2.2661
+86,16000,Ascendente,Quick Sort,7714218,771.4218
+91,16000,Descendente,Quick Sort,5547480,554.748
+96,16000,Aleatorio_0_a_10,Quick Sort,700920,70.092
+101,32000,Aleatorio,Quick Sort,49429,4.9429
