@@ -181,6 +181,12 @@ def write_csv(path, fieldnames, rows):
             )
 
 
+def log_plot_time(value):
+    if value < 0:
+        raise ValueError("Los tiempos negativos no se pueden representar en el gráfico.")
+    return value if value > 0 else Decimal("0.5")
+
+
 def save_graphs(output_dir, median_results):
     by_algorithm_size = defaultdict(list)
     for row in median_results:
@@ -198,18 +204,20 @@ def save_graphs(output_dir, median_results):
         if not sizes:
             continue
         times = [
-            statistics.median(by_algorithm_size[(algorithm, size)])
+            log_plot_time(
+                statistics.median(by_algorithm_size[(algorithm, size)])
+            )
             for size in sizes
         ]
-        if any(size <= 0 for size in sizes) or any(time <= 0 for time in times):
-            raise ValueError("El gráfico log-log requiere tamaños y tiempos positivos.")
+        if any(size <= 0 for size in sizes):
+            raise ValueError("El gráfico log-log requiere tamaños positivos.")
         axis.plot(sizes, times, marker="o", label=algorithm)
 
     axis.set_xscale("log")
     axis.set_yscale("log")
     axis.set_title("Comparación de algoritmos (mediana entre tipos de arreglo)")
     axis.set_xlabel("Tamaño del arreglo")
-    axis.set_ylabel("Tiempo mediano (ticks)")
+    axis.set_ylabel("Tiempo mediano (ticks; 0 se muestra como 0.5)")
     axis.grid(True, which="both", linestyle="--", alpha=0.4)
     axis.legend()
     figure.tight_layout()
@@ -238,8 +246,9 @@ def save_graphs(output_dir, median_results):
             if not points:
                 continue
             sizes, times = zip(*points)
-            if any(size <= 0 for size in sizes) or any(time <= 0 for time in times):
-                raise ValueError("El gráfico log-log requiere tamaños y tiempos positivos.")
+            if any(size <= 0 for size in sizes):
+                raise ValueError("El gráfico log-log requiere tamaños positivos.")
+            times = [log_plot_time(time) for time in times]
             axis.plot(
                 sizes,
                 times,
@@ -253,7 +262,7 @@ def save_graphs(output_dir, median_results):
     axis.set_yscale("log")
     axis.set_title("Insertion Sort y Quick Sort por tipo de arreglo")
     axis.set_xlabel("Tamaño del arreglo")
-    axis.set_ylabel("Tiempo mediano (ticks)")
+    axis.set_ylabel("Tiempo mediano (ticks; 0 se muestra como 0.5)")
     axis.grid(True, which="both", linestyle="--", alpha=0.4)
     axis.legend(ncol=2)
     figure.tight_layout()
