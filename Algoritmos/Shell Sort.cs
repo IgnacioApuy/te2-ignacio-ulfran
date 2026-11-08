@@ -6,10 +6,8 @@ public static class ShellSort
     {
         int n = arreglo.Length;
 
-        // Secuencia de brechas original de Shell: n/2, n/4, ..., 1
         for (int brecha = n / 2; brecha > 0; brecha /= 2)
         {
-            // Insertion Sort, pero comparando elementos separados por "brecha"
             for (int i = brecha; i < n; i++)
             {
                 int clave = arreglo[i];
