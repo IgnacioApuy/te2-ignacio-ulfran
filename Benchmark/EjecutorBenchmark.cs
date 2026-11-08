@@ -25,6 +25,7 @@ public static class EjecutorBenchmark
         using var escritor = new StreamWriter(archivoResultados, append: false);
         escritor.WriteLine(
             "Iteracion,Tamano,TipoArreglo,Algoritmo,TiempoTicks,TiempoMilisegundos");
+        escritor.Flush();
 
         int iteracion = 1;
         for (int tamano = minN; ; )
@@ -42,6 +43,7 @@ public static class EjecutorBenchmark
                     $"{medicion.Iteracion},{medicion.Tamano},{medicion.TipoArreglo},{medicion.Algoritmo}," +
                     $"{medicion.TiempoTicks}," +
                     medicion.TiempoMilisegundos.ToString("F6", CultureInfo.InvariantCulture));
+                escritor.Flush();
                 iteracion++;
             }
 

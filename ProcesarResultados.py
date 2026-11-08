@@ -184,15 +184,16 @@ def write_csv(path, fieldnames, rows):
 def log_plot_time(value):
     if value < 0:
         raise ValueError("Los tiempos negativos no se pueden representar en el gráfico.")
-    return value if value > 0 else Decimal("0.5")
+    return value if value > 0 else Decimal("0.00005")
 
 
 def save_graphs(output_dir, median_results):
     by_algorithm_size = defaultdict(list)
     for row in median_results:
-        by_algorithm_size[(row["Algoritmo"], int(row["Tamano"]))].append(
-            row["TiempoTicks"]
-        )
+        if row["TipoArreglo"] == "Aleatorio":
+            by_algorithm_size[(row["Algoritmo"], int(row["Tamano"]))].append(
+                row["TiempoMilisegundos"]
+            )
 
     figure, axis = plt.subplots(figsize=(10, 6))
     for algorithm in ALGORITHMS:
@@ -215,9 +216,9 @@ def save_graphs(output_dir, median_results):
 
     axis.set_xscale("log")
     axis.set_yscale("log")
-    axis.set_title("Comparación de algoritmos (mediana entre tipos de arreglo)")
+    axis.set_title("Comparación de algoritmos (arreglos aleatorios)")
     axis.set_xlabel("Tamaño del arreglo")
-    axis.set_ylabel("Tiempo mediano (ticks; 0 se muestra como 0.5)")
+    axis.set_ylabel("Tiempo mediano (ms; 0 se muestra como 0.00005)")
     axis.grid(True, which="both", linestyle="--", alpha=0.4)
     axis.legend()
     figure.tight_layout()
@@ -237,7 +238,7 @@ def save_graphs(output_dir, median_results):
             points = sorted(
                 (
                     int(row["Tamano"]),
-                    row["TiempoTicks"],
+                    row["TiempoMilisegundos"],
                 )
                 for row in median_results
                 if row["Algoritmo"] == algorithm
@@ -262,7 +263,7 @@ def save_graphs(output_dir, median_results):
     axis.set_yscale("log")
     axis.set_title("Insertion Sort y Quick Sort por tipo de arreglo")
     axis.set_xlabel("Tamaño del arreglo")
-    axis.set_ylabel("Tiempo mediano (ticks; 0 se muestra como 0.5)")
+    axis.set_ylabel("Tiempo mediano (ms; 0 se muestra como 0.00005)")
     axis.grid(True, which="both", linestyle="--", alpha=0.4)
     axis.legend(ncol=2)
     figure.tight_layout()
